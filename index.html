@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -12,98 +13,72 @@
     }
     body {
       font-family: 'Segoe UI', sans-serif;
-      color: white;
       background: url('https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      color: white;
     }
-    header {
+    header, footer {
       background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
       text-align: center;
+      padding: 20px;
     }
     .logo {
-      font-size: 2.2em;
+      font-size: 2em;
       font-weight: bold;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
       color: #00bfff;
     }
-    .infinity-symbol {
-      color: #ff69b4;
-      font-size: 1.8em;
-    }
-    main {
-      background: rgba(0, 0, 0, 0.5);
+    .main-section {
+      background: rgba(0, 0, 0, 0.6);
       padding: 40px 20px;
       text-align: center;
     }
     h2 {
-      font-size: 1.7em;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.1em;
+      font-size: 2em;
       margin-bottom: 10px;
     }
     .cta-button {
-      display: inline-block;
+      margin-top: 20px;
       padding: 15px 30px;
-      font-size: 1.2em;
+      font-size: 1.1em;
       background-color: #00bfff;
-      color: white;
       border: none;
       border-radius: 10px;
+      color: white;
       text-decoration: none;
-      margin-top: 20px;
-      transition: 0.3s;
+      display: inline-block;
     }
     .cta-button:hover {
       background-color: #007acc;
     }
-    .plans {
-      margin-top: 25px;
+    .plans, .benefits, .testimonials, .faq {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .plans p {
-      margin: 8px 0;
+    .benefits div, .faq div {
+      margin-bottom: 15px;
     }
-    .extra {
-      margin-top: 20px;
-      font-style: italic;
-      font-size: 0.95em;
-    }
-    footer {
-      background: rgba(0, 0, 0, 0.6);
+    .countdown {
+      font-size: 1.5em;
+      margin: 20px 0;
       text-align: center;
-      padding: 15px;
-      font-size: 0.9em;
+      color: #ffd700;
+    }
+    .mascot {
+      margin: 30px auto;
+      text-align: center;
+    }
+    .mascot img {
+      width: 150px;
     }
   </style>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      Infinity Streaming <span class="infinity-symbol">&#8734;</span>
-    </div>
-  </header>
-  <main>
-    <h2>Infinity Streaming, sua TV online sem limites!</h2>
-    <p>Tenha acesso a filmes, séries, esportes, canais e muito mais com qualidade e estabilidade.</p>
-    <div class="plans">
-      <p><strong>Plano Mensal:</strong> R$ 25,00</p>
-      <p><strong>Plano Anual (Promocional):</strong> R$ 199,90</p>
-    </div>
-    <p class="extra">Contamos com servidor backup para garantir a melhor qualidade.</p>
-    <a class="cta-button" href="https://wa.me/5547988675945?text=Infinity%20" target="_blank">
-      Pedir Teste Grátis pelo WhatsApp
-    </a>
-  </main>
-  <footer>
-    © 2025 Infinity Streaming. Todos os direitos reservados.
-  </footer>
-</body>
-</html>
+  <script>
+    function startCountdown() {
+      const offerEnd = new Date();
+      offerEnd.setDate(offerEnd.getDate() + 2);
+      setInterval(() => {
+        const now = new Date().getTime();
+        const distance = offerEnd - now;
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 *
