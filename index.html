@@ -3,115 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Central do Usuário - Infinity Streaming</title>
+  <title>Central do Usuário - Infinity ∞</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #eaf3ff;
-      color: #333;
-      text-align: center;
-      padding: 30px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0d1b2a, #1b263b);
+      color: #fff;
+      margin: 0;
+      padding: 0;
     }
-    .container {
-      background-color: white;
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    input, button {
+
+    .login-container, .painel {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 16px;
+      max-width: 500px;
+      margin: auto;
+      margin-top: 60px;
+      background: #1e3a5f;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 132, 255, 0.3);
     }
-    button {
-      background-color: #007bff;
+
+    .login-container input, .painel input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      background: #f0f8ff;
+      color: #000;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background: #00bfff;
       color: white;
       border: none;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .info {
-      text-align: left;
-      margin-top: 20px;
-    }
-    .logo {
-      font-size: 24px;
+      border-radius: 8px;
       font-weight: bold;
-      color: #007bff;
-      margin-bottom: 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
+
+    .login-container button:hover {
+      background: #0099cc;
+    }
+
+    .usuario-info {
+      margin-top: 30px;
+      background: #102841;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .usuario-info p {
+      margin: 8px 0;
+    }
+
+    .aviso {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .aviso.proximo {
+      color: #ffcc00;
+    }
+
+    .aviso.vencido {
+      color: #ff4444;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #00eaff;
+    }
+
     .infinito {
       color: #ff0077;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .whatsapp-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #25d366;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      font-size: 24px;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="logo">Infinity <span class="infinito">∞</span> Streaming</div>
+  <div class="logo">Infinity <span class="infinito">∞</span> Streaming</div>
 
-    <div id="loginArea">
-      <input type="text" id="loginUsuario" placeholder="Digite seu nome de usuário">
-      <button onclick="entrar()">Entrar</button>
-    </div>
-
-    <div id="dadosUsuario" style="display: none;">
-      <h3>Seus dados:</h3>
-      <div class="info" id="infoContent"></div>
-      <button onclick="sair()">Sair</button>
-    </div>
+  <div class="login-container" id="login">
+    <h2 style="text-align:center;">Central do Usuário</h2>
+    <input type="text" id="codigoUsuario" placeholder="Digite seu usuário">
+    <button onclick="buscarUsuario()">Entrar</button>
   </div>
+
+  <div class="painel" id="painelUsuario" style="display:none; opacity: 0;">
+    <div class="usuario-info" id="infoUsuario"></div>
+  </div>
+
+  <a href="https://wa.me/988675945" target="_blank" class="whatsapp-button">📞</a>
 
   <script>
     let usuarios = [];
 
-    // Carregar dados do localStorage
     function carregarUsuarios() {
       const dados = localStorage.getItem('usuarios');
-      if (dados) {
-        usuarios = JSON.parse(dados);
-      }
+      if (dados) usuarios = JSON.parse(dados);
     }
 
-    // Entrar no sistema
-    function entrar() {
-      const nome = document.getElementById('loginUsuario').value.trim();
-      if (!nome) {
-        alert("Por favor, digite o nome de usuário.");
-        return;
-      }
+    function buscarUsuario() {
+      carregarUsuarios();
+      const codigo = document.getElementById('codigoUsuario').value.trim().toLowerCase();
+      const usuario = usuarios.find(u => u.nome.toLowerCase() === codigo);
 
-      const usuario = usuarios.find(u => u.nome.toLowerCase() === nome.toLowerCase());
-      if (!usuario) {
+      if (usuario) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('painelUsuario').style.display = 'block';
+
+        const hoje = new Date();
+        const vencimento = new Date(usuario.vencimento);
+        const diasRestantes = Math.ceil((vencimento - hoje) / (1000 * 60 * 60 * 24));
+
+        let aviso = '';
+        if (diasRestantes < 0) aviso = '<p class="aviso vencido">Plano VENCIDO!</p>';
+        else if (diasRestantes <= 3) aviso = `<p class="aviso proximo">Vencimento em ${diasRestantes} dia(s)!</p>`;
+
+        let avisoApp = '';
+        if (usuario.validadeLicenca) {
+          const dataApp = new Date(usuario.validadeLicenca);
+          if (dataApp < hoje) avisoApp = '<p class="aviso vencido">Licença do app expirada!</p>';
+        }
+
+        document.getElementById('infoUsuario').innerHTML = `
+          <p><strong>Nome:</strong> ${usuario.nome}</p>
+          <p><strong>Servidor:</strong> ${usuario.servidor || '---'}</p>
+          <p><strong>Vencimento:</strong> ${usuario.vencimento}</p>
+          <p><strong>Chave PIX:</strong> ${usuario.chavePIX}</p>
+          <p><strong>App Instalado:</strong> ${usuario.app || '---'}</p>
+          <p><strong>Validade da Licença:</strong> ${usuario.validadeLicenca || '---'}</p>
+          ${aviso}
+          ${avisoApp}
+        `;
+      } else {
         alert("Usuário não encontrado!");
-        return;
       }
-
-      document.getElementById('loginArea').style.display = 'none';
-      document.getElementById('dadosUsuario').style.display = 'block';
-
-      document.getElementById('infoContent').innerHTML = `
-        <strong>Nome:</strong> ${usuario.nome}<br>
-        <strong>Data de Vencimento:</strong> ${usuario.vencimento}<br>
-        <strong>Chave PIX:</strong> ${usuario.chavePIX}<br>
-        <strong>App Instalado:</strong> ${usuario.app}<br>
-        <strong>Validade da Licença:</strong> ${usuario.validadeLicenca}<br>
-      `;
-    }
-
-    function sair() {
-      document.getElementById('loginArea').style.display = 'block';
-      document.getElementById('dadosUsuario').style.display = 'none';
-      document.getElementById('loginUsuario').value = '';
     }
 
     document.addEventListener('DOMContentLoaded', carregarUsuarios);
   </script>
+
 </body>
 </html>
