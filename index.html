@@ -3,100 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Cliente</title>
+  <title>Central do Usuário - Infinity Streaming</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      background-color: #eaf3ff;
       color: #333;
-    }
-    #painelCliente {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .header {
       text-align: center;
+      padding: 30px;
+    }
+    .container {
+      background-color: white;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .info {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .logo {
       font-size: 24px;
+      font-weight: bold;
       color: #007bff;
       margin-bottom: 20px;
     }
-    .dadosUsuario {
-      margin-bottom: 20px;
-    }
-    .dadosUsuario label {
-      font-weight: bold;
-    }
-    .dadosUsuario p {
-      margin: 5px 0;
-    }
-    .dadosUsuario hr {
-      margin: 10px 0;
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      margin-top: 20px;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-    .btn:hover {
-      background-color: #0056b3;
+    .infinito {
+      color: #ff0077;
     }
   </style>
 </head>
 <body>
-  <div id="painelCliente">
-    <div class="header">Painel do Cliente</div>
 
-    <!-- Dados do Usuário -->
-    <div class="dadosUsuario">
-      <label for="usuarioNome">Nome:</label>
-      <p id="usuarioNome"></p>
-      <hr>
-      <label for="vencimento">Data de Vencimento:</label>
-      <p id="vencimento"></p>
-      <hr>
-      <label for="chavePIX">Chave PIX:</label>
-      <p id="chavePIX"></p>
-      <hr>
-      <label for="nomeApp">Nome do App Instalado:</label>
-      <p id="nomeApp"></p>
-      <hr>
-      <label for="validadeLicenca">Validade da Licença:</label>
-      <p id="validadeLicenca"></p>
-      <hr>
+  <div class="container">
+    <div class="logo">Infinity <span class="infinito">∞</span> Streaming</div>
+
+    <div id="loginArea">
+      <input type="text" id="loginUsuario" placeholder="Digite seu nome de usuário">
+      <button onclick="entrar()">Entrar</button>
     </div>
 
-    <!-- Botão de WhatsApp -->
-    <a href="https://wa.me/988675945" class="btn" target="_blank">Falar no WhatsApp</a>
+    <div id="dadosUsuario" style="display: none;">
+      <h3>Seus dados:</h3>
+      <div class="info" id="infoContent"></div>
+      <button onclick="sair()">Sair</button>
+    </div>
   </div>
 
   <script>
-    // Função para simular o carregamento dos dados do cliente
-    document.addEventListener('DOMContentLoaded', function() {
-      // Simulação de dados do cliente (isso pode vir de um banco de dados ou API)
-      const usuario = {
-        nome: "João da Silva",
-        vencimento: "2025-05-30",
-        chavePIX: "1234567890",
-        app: "Infinity TV",
-        validadeLicenca: "2025-06-30"
-      };
+    let usuarios = [];
 
-      // Preencher os dados no painel
-      document.getElementById('usuarioNome').textContent = usuario.nome;
-      document.getElementById('vencimento').textContent = usuario.vencimento;
-      document.getElementById('chavePIX').textContent = usuario.chavePIX;
-      document.getElementById('nomeApp').textContent = usuario.app;
-      document.getElementById('validadeLicenca').textContent = usuario.validadeLicenca;
-    });
+    // Carregar dados do localStorage
+    function carregarUsuarios() {
+      const dados = localStorage.getItem('usuarios');
+      if (dados) {
+        usuarios = JSON.parse(dados);
+      }
+    }
+
+    // Entrar no sistema
+    function entrar() {
+      const nome = document.getElementById('loginUsuario').value.trim();
+      if (!nome) {
+        alert("Por favor, digite o nome de usuário.");
+        return;
+      }
+
+      const usuario = usuarios.find(u => u.nome.toLowerCase() === nome.toLowerCase());
+      if (!usuario) {
+        alert("Usuário não encontrado!");
+        return;
+      }
+
+      document.getElementById('loginArea').style.display = 'none';
+      document.getElementById('dadosUsuario').style.display = 'block';
+
+      document.getElementById('infoContent').innerHTML = `
+        <strong>Nome:</strong> ${usuario.nome}<br>
+        <strong>Data de Vencimento:</strong> ${usuario.vencimento}<br>
+        <strong>Chave PIX:</strong> ${usuario.chavePIX}<br>
+        <strong>App Instalado:</strong> ${usuario.app}<br>
+        <strong>Validade da Licença:</strong> ${usuario.validadeLicenca}<br>
+      `;
+    }
+
+    function sair() {
+      document.getElementById('loginArea').style.display = 'block';
+      document.getElementById('dadosUsuario').style.display = 'none';
+      document.getElementById('loginUsuario').value = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarUsuarios);
   </script>
 </body>
 </html>
