@@ -2,41 +2,48 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Central do Usuário - Infinity ∞</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #0d1b2a, #1b263b);
-      color: #fff;
+      color: white;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
 
-    .login-container, .painel {
-      width: 100%;
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #00eaff;
+    }
+
+    .logo span {
+      color: #ff0077;
+    }
+
+    .login, .dados {
       max-width: 500px;
       margin: auto;
-      margin-top: 60px;
-      background: #1e3a5f;
-      padding: 30px;
+      background: #102841;
+      padding: 25px;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 132, 255, 0.3);
+      box-shadow: 0 0 20px rgba(0,132,255,0.2);
     }
 
-    .login-container input, .painel input {
+    input {
       width: 100%;
       padding: 12px;
-      margin: 8px 0;
+      margin: 10px 0;
       border-radius: 8px;
       border: none;
       font-size: 16px;
-      background: #f0f8ff;
-      color: #000;
     }
 
-    .login-container button {
+    button {
       width: 100%;
       padding: 12px;
       background: #00bfff;
@@ -48,128 +55,106 @@
       cursor: pointer;
     }
 
-    .login-container button:hover {
+    button:hover {
       background: #0099cc;
     }
 
-    .usuario-info {
-      margin-top: 30px;
-      background: #102841;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-
-    .usuario-info p {
-      margin: 8px 0;
-    }
-
-    .aviso {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    .aviso.proximo {
-      color: #ffcc00;
-    }
-
-    .aviso.vencido {
-      color: #ff4444;
-    }
-
-    .logo {
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #00eaff;
-    }
-
-    .infinito {
-      color: #ff0077;
-    }
-
-    a {
-      text-decoration: none;
-    }
-
-    .whatsapp-button {
+    .whatsapp-btn {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: #25d366;
-      color: white;
-      padding: 15px;
+      background: #25d366;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      font-size: 24px;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .whatsapp-btn i {
+      font-size: 30px;
+      color: white;
+    }
+
+    .dados p {
+      margin: 10px 0;
+      line-height: 1.4;
+    }
+
+    .erro {
+      text-align: center;
+      color: #ff4d4d;
+      margin-top: 20px;
     }
   </style>
+  <script src="https://kit.fontawesome.com/a2e0e6fa1f.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-  <div class="logo">Infinity <span class="infinito">∞</span> Streaming</div>
+  <div class="logo">Infinity <span>∞</span> Streaming</div>
 
-  <div class="login-container" id="login">
-    <h2 style="text-align:center;">Central do Usuário</h2>
-    <input type="text" id="codigoUsuario" placeholder="Digite seu usuário">
+  <div class="login" id="loginBox">
+    <h2>Digite seu nome de usuário</h2>
+    <input type="text" id="nomeUsuario" placeholder="Ex: João">
     <button onclick="buscarUsuario()">Entrar</button>
+    <p class="erro" id="erroMsg"></p>
   </div>
 
-  <div class="painel" id="painelUsuario" style="display:none; opacity: 0;">
-    <div class="usuario-info" id="infoUsuario"></div>
+  <div class="dados" id="dadosBox" style="display:none;">
+    <h2>Bem-vindo!</h2>
+    <p><strong>Nome:</strong> <span id="nomeInfo"></span></p>
+    <p><strong>Servidor:</strong> <span id="servidorInfo"></span></p>
+    <p><strong>Data de Vencimento:</strong> <span id="vencimentoInfo"></span></p>
+    <p><strong>Chave PIX:</strong> <span id="pixInfo"></span></p>
+    <p><strong>App Instalado:</strong> <span id="appInfo"></span></p>
+    <p><strong>Validade da Licença:</strong> <span id="licencaInfo"></span></p>
+    <p><strong>Facebook:</strong> <a href="https://facebook.com/seupage" target="_blank">Clique aqui</a></p>
+    <p><strong>Landing Page:</strong> <a href="https://seulink.com" target="_blank">Acessar</a></p>
   </div>
 
-  <a href="https://wa.me/988675945" target="_blank" class="whatsapp-button">📞</a>
+  <a class="whatsapp-btn" href="https://wa.me/5598988675945" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
   <script>
-    let usuarios = [];
-
-    function carregarUsuarios() {
-      const dados = localStorage.getItem('usuarios');
-      if (dados) usuarios = JSON.parse(dados);
-    }
-
     function buscarUsuario() {
-      carregarUsuarios();
-      const codigo = document.getElementById('codigoUsuario').value.trim().toLowerCase();
-      const usuario = usuarios.find(u => u.nome.toLowerCase() === codigo);
+      const nome = document.getElementById('nomeUsuario').value.trim().toLowerCase();
+      const erroMsg = document.getElementById('erroMsg');
+      erroMsg.textContent = '';
 
-      if (usuario) {
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('painelUsuario').style.display = 'block';
-
-        const hoje = new Date();
-        const vencimento = new Date(usuario.vencimento);
-        const diasRestantes = Math.ceil((vencimento - hoje) / (1000 * 60 * 60 * 24));
-
-        let aviso = '';
-        if (diasRestantes < 0) aviso = '<p class="aviso vencido">Plano VENCIDO!</p>';
-        else if (diasRestantes <= 3) aviso = `<p class="aviso proximo">Vencimento em ${diasRestantes} dia(s)!</p>`;
-
-        let avisoApp = '';
-        if (usuario.validadeLicenca) {
-          const dataApp = new Date(usuario.validadeLicenca);
-          if (dataApp < hoje) avisoApp = '<p class="aviso vencido">Licença do app expirada!</p>';
-        }
-
-        document.getElementById('infoUsuario').innerHTML = `
-          <p><strong>Nome:</strong> ${usuario.nome}</p>
-          <p><strong>Servidor:</strong> ${usuario.servidor || '---'}</p>
-          <p><strong>Vencimento:</strong> ${usuario.vencimento}</p>
-          <p><strong>Chave PIX:</strong> ${usuario.chavePIX}</p>
-          <p><strong>App Instalado:</strong> ${usuario.app || '---'}</p>
-          <p><strong>Validade da Licença:</strong> ${usuario.validadeLicenca || '---'}</p>
-          ${aviso}
-          ${avisoApp}
-        `;
-      } else {
-        alert("Usuário não encontrado!");
+      if (!nome) {
+        erroMsg.textContent = 'Digite seu nome para continuar.';
+        return;
       }
+
+      const dados = localStorage.getItem('usuarios');
+      if (!dados) {
+        erroMsg.textContent = 'Nenhum usuário encontrado.';
+        return;
+      }
+
+      const lista = JSON.parse(dados);
+      const usuario = lista.find(u => u.nome.toLowerCase() === nome);
+
+      if (!usuario) {
+        erroMsg.textContent = 'Usuário não encontrado.';
+        return;
+      }
+
+      // Preencher os dados
+      document.getElementById('nomeInfo').textContent = usuario.nome;
+      document.getElementById('servidorInfo').textContent = usuario.servidor;
+      document.getElementById('vencimentoInfo').textContent = usuario.vencimento;
+      document.getElementById('pixInfo').textContent = usuario.chavePIX;
+      document.getElementById('appInfo').textContent = usuario.app;
+      document.getElementById('licencaInfo').textContent = usuario.validadeLicenca;
+
+      // Trocar telas
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('dadosBox').style.display = 'block';
     }
-
-    document.addEventListener('DOMContentLoaded', carregarUsuarios);
   </script>
-
 </body>
 </html>
