@@ -1,0 +1,163 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel Master - Infinity Streaming</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #0f172a, #000);
+    }
+    .login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body class="text-white p-6">
+
+  <div id="telaLogin" class="login">
+    <div class="bg-blue-800 p-8 rounded-xl shadow-xl w-full max-w-sm">
+      <h2 class="text-xl font-bold mb-4 text-center">Login Master</h2>
+      <input id="userLogin" placeholder="Usuário" class="p-2 mb-2 w-full rounded text-black"/>
+      <input id="senhaLogin" type="password" placeholder="Senha" class="p-2 mb-4 w-full rounded text-black"/>
+      <button onclick="validarLogin()" class="w-full bg-green-600 py-2 rounded">Entrar</button>
+    </div>
+  </div>
+
+  <div id="painelMaster" style="display:none">
+    <h1 class="text-3xl font-bold mb-6">Painel Master - Infinity Streaming</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input id="usuario" placeholder="Usuário" class="p-2 rounded text-black">
+      <input id="servidor" placeholder="Servidor" class="p-2 rounded text-black">
+      <input id="vencimento" placeholder="Validade (dd/mm/aaaa)" class="p-2 rounded text-black" oninput="formatarData(this)">
+      <input id="app" placeholder="App Instalado" class="p-2 rounded text-black">
+      <input id="pix" placeholder="Chave PIX" class="p-2 rounded text-black">
+      <button onclick="adicionarOuEditarUsuario()" class="bg-green-600 p-2 rounded mt-2">Salvar</button>
+    </div>
+
+    <hr class="my-6">
+
+    <input id="filtro" oninput="filtrar()" placeholder="Buscar por nome ou servidor" class="p-2 rounded text-black w-full max-w-md mb-4">
+    <div id="listaUsuarios"></div>
+  </div>
+
+  <script>
+    let usuarios = [];
+    let editandoIndex = null;
+
+    function validarLogin() {
+      const user = document.getElementById("userLogin").value;
+      const senha = document.getElementById("senhaLogin").value;
+      if (user === "admin" && senha === "1234") {
+        document.getElementById("telaLogin").style.display = "none";
+        document.getElementById("painelMaster").style.display = "block";
+        carregarUsuarios();
+      } else {
+        alert("Usuário ou senha incorretos!");
+      }
+    }
+
+    async function carregarUsuarios() {
+      try {
+        const resposta = await fetch("https://raw.githubusercontent.com/InfinityStreaming/Landing/main/usuarios.json");
+        usuarios = await resposta.json();
+        salvarLocalStorage();
+      } catch {
+        usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      }
+      exibirUsuarios();
+    }
+
+    function salvarLocalStorage() {
+      localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    }
+
+    function exibirUsuarios(filtro = "") {
+      const lista = document.getElementById("listaUsuarios");
+      lista.innerHTML = "";
+      const termo = filtro.toLowerCase();
+      usuarios
+        .filter(u => u.usuario.toLowerCase().includes(termo) || u.servidor.toLowerCase().includes(termo))
+        .forEach((user, i) => {
+          const item = document.createElement("div");
+          item.className = "bg-blue-900 p-4 rounded-xl mb-3 text-white flex justify-between items-center";
+          item.innerHTML = `
+            <div>
+              <p><strong>${user.usuario}</strong> - ${user.servidor}</p>
+              <p>Vence: ${user.vencimento} | App: ${user.app}</p>
+              <p>PIX: ${user.pix}</p>
+            </div>
+            <div>
+              <button onclick="editarUsuario(${i})" class="bg-yellow-500 px-3 py-1 rounded mr-2">Editar</button>
+              <button onclick="excluirUsuario(${i})" class="bg-red-600 px-3 py-1 rounded">Excluir</button>
+            </div>
+          `;
+          lista.appendChild(item);
+        });
+    }
+
+    function adicionarOuEditarUsuario() {
+      const usuario = document.getElementById("usuario").value;
+      const servidor = document.getElementById("servidor").value;
+      const vencimento = document.getElementById("vencimento").value;
+      const app = document.getElementById("app").value;
+      const pix = document.getElementById("pix").value;
+
+      const dados = { usuario, servidor, vencimento, app, pix };
+      if (editandoIndex !== null) {
+        usuarios[editandoIndex] = dados;
+        editandoIndex = null;
+      } else {
+        usuarios.push(dados);
+      }
+      salvarLocalStorage();
+      exibirUsuarios();
+      limparFormulario();
+    }
+
+    function editarUsuario(index) {
+      const u = usuarios[index];
+      document.getElementById("usuario").value = u.usuario;
+      document.getElementById("servidor").value = u.servidor;
+      document.getElementById("vencimento").value = u.vencimento;
+      document.getElementById("app").value = u.app;
+      document.getElementById("pix").value = u.pix;
+      editandoIndex = index;
+    }
+
+    function excluirUsuario(index) {
+      if (confirm("Deseja excluir este usuário?")) {
+        usuarios.splice(index, 1);
+        salvarLocalStorage();
+        exibirUsuarios();
+      }
+    }
+
+    function limparFormulario() {
+      document.getElementById("usuario").value = "";
+      document.getElementById("servidor").value = "";
+      document.getElementById("vencimento").value = "";
+      document.getElementById("app").value = "";
+      document.getElementById("pix").value = "";
+    }
+
+    function formatarData(input) {
+      let valor = input.value.replace(/\\D/g, "");
+      if (valor.length >= 2) valor = valor.slice(0, 2) + "/" + valor.slice(2);
+      if (valor.length >= 5) valor = valor.slice(0, 5) + "/" + valor.slice(5, 9);
+      input.value = valor;
+    }
+
+    function filtrar() {
+      const filtro = document.getElementById("filtro").value;
+      exibirUsuarios(filtro);
+    }
+  </script>
+</body>
+</html>
