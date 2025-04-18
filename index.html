@@ -1,159 +1,135 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Central do Usuário - Infinity ∞</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Infinity Streaming - Central do Usuário</title>
   <style>
     body {
+      margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #0d1b2a, #1b263b);
-      color: white;
-      margin: 0;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
       padding: 20px;
     }
-
-    .logo {
+    .container {
+      background: #1e3a5f;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 100%;
       text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #00eaff;
     }
-
-    .logo span {
-      color: #ff0077;
-    }
-
-    .login, .dados {
-      max-width: 500px;
-      margin: auto;
-      background: #102841;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,132,255,0.2);
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #00bfff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0099cc;
-    }
-
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25d366;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
+    h1 {
+      font-size: 1.8em;
+      color: #00bfff;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      gap: 10px;
     }
-
-    .whatsapp-btn i {
-      font-size: 30px;
+    .infinity {
+      font-size: 1.4em;
+      color: #ff6ec7;
+    }
+    input {
+      padding: 10px;
+      width: 100%;
+      margin: 15px 0;
+      border: none;
+      border-radius: 8px;
+    }
+    button {
+      background: #0077ff;
       color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
-
-    .dados p {
-      margin: 10px 0;
-      line-height: 1.4;
+    button:hover {
+      background: #005ecc;
     }
-
-    .erro {
-      text-align: center;
-      color: #ff4d4d;
+    .info {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .info strong {
+      color: #00ffff;
+    }
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 22px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      text-decoration: none;
+    }
+    .links {
       margin-top: 20px;
     }
+    .links a {
+      display: block;
+      margin-top: 5px;
+      color: #00d9ff;
+      text-decoration: none;
+    }
   </style>
-  <script src="https://kit.fontawesome.com/a2e0e6fa1f.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <div class="container">
+    <h1>Infinity <span class="infinity">∞</span> Streaming</h1>
+    <p>Sua TV sem limites</p>
+    <input type="text" id="usuarioInput" placeholder="Digite seu usuário"/>
+    <button onclick="buscarUsuario()">Consultar</button>
 
-  <div class="logo">Infinity <span>∞</span> Streaming</div>
+    <div class="info" id="info"></div>
 
-  <div class="login" id="loginBox">
-    <h2>Digite seu nome de usuário</h2>
-    <input type="text" id="nomeUsuario" placeholder="Ex: João">
-    <button onclick="buscarUsuario()">Entrar</button>
-    <p class="erro" id="erroMsg"></p>
+    <div class="links">
+      <a href="https://www.facebook.com/share/14e2XmHRnx/?mibextid=qi2Omg" target="_blank">Facebook Oficial</a>
+      <a href="https://wa.me/5547988675945" target="_blank">Fale conosco no WhatsApp</a>
+      <a href="https://infinitystreaming.github.io/V3/" target="_blank">Landing Page</a>
+    </div>
   </div>
 
-  <div class="dados" id="dadosBox" style="display:none;">
-    <h2>Bem-vindo!</h2>
-    <p><strong>Nome:</strong> <span id="nomeInfo"></span></p>
-    <p><strong>Servidor:</strong> <span id="servidorInfo"></span></p>
-    <p><strong>Data de Vencimento:</strong> <span id="vencimentoInfo"></span></p>
-    <p><strong>Chave PIX:</strong> <span id="pixInfo"></span></p>
-    <p><strong>App Instalado:</strong> <span id="appInfo"></span></p>
-    <p><strong>Validade da Licença:</strong> <span id="licencaInfo"></span></p>
-    <p><strong>Facebook:</strong> <a href="https://facebook.com/seupage" target="_blank">Clique aqui</a></p>
-    <p><strong>Landing Page:</strong> <a href="https://seulink.com" target="_blank">Acessar</a></p>
-  </div>
-
-  <a class="whatsapp-btn" href="https://wa.me/5598988675945" target="_blank">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+  <a class="floating-whatsapp" href="https://wa.me/5547988675945" target="_blank">W</a>
 
   <script>
-    function buscarUsuario() {
-      const nome = document.getElementById('nomeUsuario').value.trim().toLowerCase();
-      const erroMsg = document.getElementById('erroMsg');
-      erroMsg.textContent = '';
+    async function buscarUsuario() {
+      const usuario = document.getElementById('usuarioInput').value.trim().toLowerCase();
+      const infoDiv = document.getElementById('info');
+      infoDiv.innerHTML = "Buscando informações...";
 
-      if (!nome) {
-        erroMsg.textContent = 'Digite seu nome para continuar.';
-        return;
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/InfinityStreaming/Landing/main/usuarios.json');
+        const data = await response.json();
+
+        const usuarioEncontrado = data.find(u => u.usuario.toLowerCase() === usuario);
+
+        if (usuarioEncontrado) {
+          infoDiv.innerHTML = `
+            <p><strong>Usuário:</strong> ${usuarioEncontrado.usuario}</p>
+            <p><strong>Servidor:</strong> ${usuarioEncontrado.servidor}</p>
+            <p><strong>App Instalado:</strong> ${usuarioEncontrado.app}</p>
+            <p><strong>Validade da Licença:</strong> ${usuarioEncontrado.vencimento}</p>
+            <p><strong>Chave PIX:</strong> ${usuarioEncontrado.pix}</p>
+          `;
+        } else {
+          infoDiv.innerHTML = "<p style='color: red;'>Usuário não encontrado.</p>";
+        }
+      } catch (e) {
+        infoDiv.innerHTML = "<p style='color: red;'>Erro ao buscar dados. Verifique sua conexão.</p>";
       }
-
-      const dados = localStorage.getItem('usuarios');
-      if (!dados) {
-        erroMsg.textContent = 'Nenhum usuário encontrado.';
-        return;
-      }
-
-      const lista = JSON.parse(dados);
-      const usuario = lista.find(u => u.nome.toLowerCase() === nome);
-
-      if (!usuario) {
-        erroMsg.textContent = 'Usuário não encontrado.';
-        return;
-      }
-
-      // Preencher os dados
-      document.getElementById('nomeInfo').textContent = usuario.nome;
-      document.getElementById('servidorInfo').textContent = usuario.servidor;
-      document.getElementById('vencimentoInfo').textContent = usuario.vencimento;
-      document.getElementById('pixInfo').textContent = usuario.chavePIX;
-      document.getElementById('appInfo').textContent = usuario.app;
-      document.getElementById('licencaInfo').textContent = usuario.validadeLicenca;
-
-      // Trocar telas
-      document.getElementById('loginBox').style.display = 'none';
-      document.getElementById('dadosBox').style.display = 'block';
     }
   </script>
 </body>
